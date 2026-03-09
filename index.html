@@ -247,15 +247,15 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
   // splitter lvl9: splits into 2 minis on hit (orange starburst ÷)
   function pickDoubtType(){
     var pool=['runner','runner','runner'];
-    if(level>=2){ pool.push('floater','floater'); }
-    if(level>=3){ pool.push('diver'); }
-    if(level>=4){ pool.push('floater','diver'); }
-    if(level>=5){ pool.push('ghost'); }
-    if(level>=6){ pool.push('ghost','diver'); }
-    if(level>=7){ pool.push('charger','charger'); }
-    if(level>=8){ pool.push('charger','ghost'); }
-    if(level>=9){ pool.push('splitter','splitter'); }
-    if(level>=10){ pool.push('splitter','charger'); }
+    if(level>=5){ pool.push('floater','floater'); }
+    if(level>=7){ pool.push('diver'); }
+    if(level>=10){ pool.push('floater','diver'); }
+    if(level>=15){ pool.push('ghost'); }
+    if(level>=20){ pool.push('ghost','diver'); }
+    if(level>=25){ pool.push('charger','charger'); }
+    if(level>=30){ pool.push('charger','ghost'); }
+    if(level>=35){ pool.push('splitter','splitter'); }
+    if(level>=40){ pool.push('splitter','charger'); }
     return pool[Math.floor(Math.random()*pool.length)];
   }
 
