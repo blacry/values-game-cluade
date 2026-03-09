@@ -71,6 +71,15 @@ canvas{display:block;position:fixed;inset:0;z-index:1;}
 .govl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#F5F0E8;opacity:.4;margin-top:2px;}
 .sml{padding:11px 32px;background:transparent;border:1.5px solid #F5F0E8;color:#F5F0E8;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s;margin-top:10px;position:relative;z-index:2;}
 .sml:hover{background:#F5F0E8;color:#080808;}
+
+/* ── PAUSE ── */
+#pause-btn{position:fixed;top:60px;right:16px;width:38px;height:38px;border-radius:50%;background:rgba(245,240,232,0.07);border:1.5px solid rgba(245,240,232,0.18);display:none;align-items:center;justify-content:center;cursor:pointer;z-index:9;transition:background .2s;pointer-events:all;}
+#pause-btn:hover,#pause-btn:active{background:rgba(245,240,232,0.2);}
+#pause-btn.visible{display:flex;}
+#pause-screen{position:fixed;inset:0;background:rgba(8,8,8,0.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:20;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;}
+#pause-screen.open{opacity:1;visibility:visible;}
+.pause-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(64px,12vw,110px);color:#F5F0E8;letter-spacing:.06em;line-height:1;margin-bottom:4px;}
+.pause-sub{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:#F5F0E8;opacity:.28;margin-bottom:20px;}
 </style>
 </head>
 <body>
@@ -99,6 +108,20 @@ canvas{display:block;position:fixed;inset:0;z-index:1;}
 <div id="streak-el"></div>
 
 <canvas id="game-canvas"></canvas>
+
+<!-- PAUSE BTN -->
+<button id="pause-btn" aria-label="Pause">
+  <svg id="pause-icon" width="16" height="16" viewBox="0 0 24 24" fill="#F5F0E8"><rect x="5" y="3" width="4" height="18" rx="1"/><rect x="15" y="3" width="4" height="18" rx="1"/></svg>
+  <svg id="play-icon" width="16" height="16" viewBox="0 0 24 24" fill="#F5F0E8" style="display:none"><polygon points="5,3 19,12 5,21"/></svg>
+</button>
+
+<!-- PAUSE SCREEN -->
+<div id="pause-screen">
+  <div class="pause-title">PAUSED</div>
+  <div class="pause-sub">Press Esc or tap resume to continue</div>
+  <button class="big-btn" id="resume-btn">RESUME</button>
+  <button class="sml" id="pause-menu-btn" style="margin-top:8px">MAIN MENU</button>
+</div>
 
 <!-- TOUCH CONTROLS -->
 <div id="touch-controls">
@@ -138,7 +161,7 @@ canvas{display:block;position:fixed;inset:0;z-index:1;}
   var VALUES = ['creativity','growth','kindness','purpose'];
   var GRAV = 0.32, JUMP_F = -17, SPEED = 6.5;
 
-  var state = 'title';
+  var state = 'title'; // title | playing | paused | gameover
   var score, bestScore, lives, combo, comboTimer, level, levelTimer, frame;
   var collected, powerUp, powerTimer, multiplier, multiplierTimer;
   var particles, orbs, doubts, floatTexts, bgStars;
@@ -159,6 +182,10 @@ canvas{display:block;position:fixed;inset:0;z-index:1;}
   window.addEventListener('keydown', function(e){
     keys[e.code] = true;
     if(state==='playing' && (e.code==='Space'||e.code==='ArrowUp')) e.preventDefault();
+    if(e.code==='Escape'){
+      if(state==='playing') pauseGame();
+      else if(state==='paused') resumeGame();
+    }
   });
   window.addEventListener('keyup', function(e){ keys[e.code] = false; });
 
@@ -211,6 +238,7 @@ canvas{display:block;position:fixed;inset:0;z-index:1;}
     P.invincible=0; P.dashTimer=0; P.activeValue=null; P.trail=[];
     initStars(); spawnOrbs(7);
     document.getElementById('hud').classList.remove('hidden');
+    document.getElementById('pause-btn').classList.add('visible');
     if(isMobile) document.getElementById('touch-controls').classList.add('active');
     updateLivesHUD();
     state='playing';
@@ -554,6 +582,8 @@ canvas{display:block;position:fixed;inset:0;z-index:1;}
     bestScore=Math.max(score,parseInt(localStorage.getItem('vg_best')||0));
     localStorage.setItem('vg_best',bestScore);
     document.getElementById('hud').classList.add('hidden');
+    document.getElementById('pause-btn').classList.remove('visible');
+    document.getElementById('pause-screen').classList.remove('open');
     document.getElementById('go-score').textContent=score.toLocaleString()+' pts';
     document.getElementById('go-best').textContent='Best: '+bestScore.toLocaleString();
     var el=document.getElementById('go-vals'); el.innerHTML='';
@@ -561,11 +591,40 @@ canvas{display:block;position:fixed;inset:0;z-index:1;}
     show('gameover-screen');
   }
 
+  // ── PAUSE LOGIC ──
+  function pauseGame(){
+    if(state!=='playing') return;
+    state='paused';
+    document.getElementById('pause-screen').classList.add('open');
+    document.getElementById('pause-icon').style.display='none';
+    document.getElementById('play-icon').style.display='block';
+  }
+  function resumeGame(){
+    if(state!=='paused') return;
+    state='playing';
+    document.getElementById('pause-screen').classList.remove('open');
+    document.getElementById('pause-icon').style.display='block';
+    document.getElementById('play-icon').style.display='none';
+  }
+  document.getElementById('pause-btn').addEventListener('click', function(){
+    if(state==='playing') pauseGame();
+    else if(state==='paused') resumeGame();
+  });
+  document.getElementById('resume-btn').addEventListener('click', resumeGame);
+  document.getElementById('pause-menu-btn').addEventListener('click', function(){
+    state='title';
+    document.getElementById('pause-screen').classList.remove('open');
+    document.getElementById('pause-btn').classList.remove('visible');
+    document.getElementById('hud').classList.add('hidden');
+    document.getElementById('touch-controls').classList.remove('active');
+    show('title-screen');
+  });
+
   document.getElementById('start-btn').addEventListener('click', startGame);
   document.getElementById('retry-btn').addEventListener('click', function(){ hide('gameover-screen'); startGame(); });
   document.getElementById('menu-btn').addEventListener('click', function(){ hide('gameover-screen'); show('title-screen'); state='title'; });
 
-  function loop(){ if(state==='playing'){ update(); draw(); } requestAnimationFrame(loop); }
+  function loop(){ if(state==='playing'){ update(); draw(); } else if(state==='paused'){ draw(); } requestAnimationFrame(loop); }
   loop();
 })();
 </script>
