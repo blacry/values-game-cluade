@@ -4,6 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>VALUES — The Game</title>
+
+  <!-- Social Media Preview (OG Tags) -->
+  <meta property="og:title" content="VALUES — The Game">
+  <meta property="og:description" content="Collect values, dodge doubts, level up. How far can you go?">
+  <meta property="og:image" content="/og-image.png">
+  <meta property="og:image:width" content="1536">
+  <meta property="og:image:height" content="1024">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="VALUES — The Game">
+  <meta name="twitter:description" content="Collect values, dodge doubts, level up. How far can you go?">
+  <meta name="twitter:image" content="/og-image.png">
+
+<link rel="icon" type="image/png" href="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAlACUDASIAAhEBAxEB/8QAGgAAAgMBAQAAAAAAAAAAAAAAAAgFBgcEAv/EADIQAAEDAwMCAwMNAAAAAAAAAAECAwQABQYHERIIITFBURRhcRMVFiNiY4OUoaPB0eH/xAAZAQACAwEAAAAAAAAAAAAAAAACBQMEBgD/xAAnEQACAgEDAwIHAAAAAAAAAAABAgMRAAQFIRIxQQZRIjKRsdHh8P/aAAwDAQACEQMRAD8AWzEbDNv16h2i3Ml6XLdS00keZP8AHnTV2TpOgi3tKuuUvollILiY8dJQD6Ak71kHSs0ka142ogHZx0/sOUxepHUHb8RzKbYmsfm3GNbCgXKW2oANFWx2SD47A96WKUey/vWO5RLEVSIc1fa/f7VkCelCwEbfSy4flUf3WUa86CTcAtSb5b55udr5ht1am+LjRPgVAdtj4b0yGq2sUDDIdl+b7W/eZt5bL0VhtQSA0ACVKJ+NV7UHN7fqJ0v32/wozsbmlDTrDu3JpxEhAUn/AGiZI1B6e45wI5dQ7L18qTXbjx+cRWQzs54UVITmtnj2oollsDOk09MRmsdLziUaxY8pSgkBbvcn7lymQz3RnB8uyx3IZ0qUw7J4e2sMSAluTx8OQ+AG/rSgaWXxiyZfbbjIP1LLh5+4KSUk/rTWxLzapzCH4twjONrG4IcFLJNSdOStX5x7Ft66xQ4aqFf31yzak6c4pnMG2sTJDsF62ApiSIjoQttBABT7x2FQGpON2LC+m+9Y7YjtGabbVutzktxRfQVKUfMk159thjuZbA/EFZ7rjldpYw2VaGZbT8qXxTxbUDxAUFbnb4UA3AyfD09+MkOyrDT9fy89v3i2TyPlzRXNMe3dPeimKIekYnlkBc5zw3lJI2q0YvMdTOAHmn1ooqLXIpjaxljaJXEqUfOWa7TnRAcP2TWfzJLh33ooqhtiKFPGOPUErlxZ8ZEvOKK6KKK0AArMWxN5/9k=">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -54,6 +68,9 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
 .govl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#F5F0E8;opacity:.4;margin-top:2px;}
 .sml{padding:11px 32px;background:transparent;border:1.5px solid #F5F0E8;color:#F5F0E8;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:background .2s,color .2s;margin-top:10px;position:relative;z-index:2;}
 .sml:hover{background:#F5F0E8;color:#080808;}
+.share-btn{padding:13px 36px;background:linear-gradient(135deg,#FF3D00,#FF6EC7);color:#F5F0E8;border:none;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.18em;cursor:pointer;transition:transform .12s,opacity .12s;position:relative;z-index:2;margin-top:6px;border-radius:3px;}
+.share-btn:hover{transform:scale(1.05);opacity:.9;}
+.share-btn:active{transform:scale(.96);}
 
 /* ── PAUSE ── */
 #pause-btn{position:fixed;top:60px;right:16px;width:38px;height:38px;border-radius:50%;background:rgba(245,240,232,0.07);border:1.5px solid rgba(245,240,232,0.18);display:none;align-items:center;justify-content:center;cursor:pointer;z-index:9;transition:background .2s;pointer-events:all;}
@@ -124,7 +141,8 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
   <div class="gos" id="go-score">0 pts</div>
   <div class="gob" id="go-best">Best: 0</div>
   <div class="govs" id="go-vals"></div>
-  <button class="big-btn" id="retry-btn" style="margin-bottom:12px">PLAY AGAIN</button>
+  <button class="share-btn" id="share-btn">📤 SHARE SCORE</button>
+  <button class="big-btn" id="retry-btn" style="margin-bottom:4px;margin-top:12px;">PLAY AGAIN</button>
   <button class="sml" id="menu-btn">MAIN MENU</button>
   <div class="gob" style="color: gray; padding-top: 2vh;">Thanks for playing the game!</div>
 </div>
@@ -613,6 +631,79 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
 
   function hide(id){document.getElementById(id).classList.add('hidden');}
   function show(id){document.getElementById(id).classList.remove('hidden');}
+
+  // ── SHARE SCORE ──
+  function shareScore(){
+    var sw=600, sh=338;
+    var sc=document.createElement('canvas');
+    sc.width=sw; sc.height=sh;
+    var sx=sc.getContext('2d');
+
+    // background
+    sx.fillStyle='#080808'; sx.fillRect(0,0,sw,sh);
+
+    // subtle grid lines
+    sx.strokeStyle='rgba(245,240,232,0.04)'; sx.lineWidth=1;
+    for(var gx=0;gx<sw;gx+=40){sx.beginPath();sx.moveTo(gx,0);sx.lineTo(gx,sh);sx.stroke();}
+    for(var gy=0;gy<sh;gy+=40){sx.beginPath();sx.moveTo(0,gy);sx.lineTo(sw,gy);sx.stroke();}
+
+    // value bar across bottom
+    var seg=sw/4, vcols=['#FF3D00','#00C853','#FF6EC7','#FFD600'];
+    vcols.forEach(function(c,i){sx.fillStyle=c;sx.globalAlpha=0.7;sx.fillRect(i*seg,sh-3,seg,3);});
+    sx.globalAlpha=1;
+
+    // title
+    sx.font='bold 52px sans-serif'; sx.fillStyle='#F5F0E8';
+    sx.textAlign='left'; sx.fillText('VALUES', 50, 80);
+    sx.font='18px monospace'; sx.fillStyle='rgba(245,240,232,0.35)';
+    sx.fillText('THE GAME  ·  2026', 52, 106);
+
+    // divider
+    sx.strokeStyle='rgba(245,240,232,0.1)'; sx.lineWidth=1;
+    sx.beginPath(); sx.moveTo(50,120); sx.lineTo(sw-50,120); sx.stroke();
+
+    // score
+    sx.textAlign='left';
+    sx.font='bold 14px monospace'; sx.fillStyle='rgba(245,240,232,0.4)';
+    sx.fillText('SCORE', 50, 152);
+    sx.font='bold 72px sans-serif'; sx.fillStyle='#F5F0E8';
+    sx.fillText(score.toLocaleString(), 50, 228);
+
+    // level
+    sx.font='bold 14px monospace'; sx.fillStyle='rgba(245,240,232,0.4)';
+    sx.fillText('LEVEL', 50, 262);
+    sx.font='bold 36px sans-serif'; sx.fillStyle='#FFD600';
+    sx.fillText(level, 50, 300);
+
+    // values collected (right side)
+    var vdata=[{l:'CREATIVITY',c:'#FF3D00',v:collected.creativity},{l:'GROWTH',c:'#00C853',v:collected.growth},{l:'KINDNESS',c:'#FF6EC7',v:collected.kindness},{l:'PURPOSE',c:'#FFD600',v:collected.purpose}];
+    sx.textAlign='left';
+    vdata.forEach(function(vd,i){
+      var col = i<2 ? sw-240 : sw-120;
+      var row = i%2===0 ? 152 : 232;
+      sx.font='bold 30px sans-serif'; sx.fillStyle=vd.c; sx.fillText(vd.v, col, row);
+      sx.font='10px monospace'; sx.fillStyle='rgba(245,240,232,0.35)'; sx.fillText(vd.l, col, row+18);
+    });
+
+    // tagline
+    sx.textAlign='center'; sx.font='italic 13px sans-serif';
+    sx.fillStyle='rgba(245,240,232,0.22)';
+    sx.fillText('Dodge doubts. Collect values. Level up.', sw/2, sh-18);
+
+    // export
+    sc.toBlob(function(blob){
+      var url=URL.createObjectURL(blob);
+      var shareText='I scored '+score.toLocaleString()+' pts on VALUES — The Game! Can you beat me? 🎮';
+      if(navigator.share && navigator.canShare && navigator.canShare({files:[new File([blob],'values-score.png',{type:'image/png'})]])){
+        navigator.share({title:'VALUES — The Game',text:shareText,files:[new File([blob],'values-score.png',{type:'image/png'})]}).catch(function(){});
+      } else {
+        var a=document.createElement('a'); a.href=url; a.download='values-score.png'; a.click();
+        setTimeout(function(){URL.revokeObjectURL(url);},3000);
+      }
+    },'image/png');
+  }
+
+  document.getElementById('share-btn').addEventListener('click', shareScore);
 
   function endGame(){
     state='gameover';
