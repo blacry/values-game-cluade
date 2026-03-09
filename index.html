@@ -1,15 +1,17 @@
-  <!DOCTYPE html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>VALUES — The Game</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--cream:#F5F0E8;--ink:#080808;--creativity:#FF3D00;--growth:#00C853;--kindness:#FF6EC7;--purpose:#FFD600;}
 html,body{width:100%;height:100%;background:#080808;overflow:hidden;font-family:'DM Sans',sans-serif;}
-canvas{display:block;position:fixed;inset:0;z-index:1;}
+body{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;}
+canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
 
 .screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:10;transition:opacity .4s,visibility .4s;}
 .screen.hidden{opacity:0;visibility:hidden;pointer-events:none;}
@@ -18,7 +20,8 @@ canvas{display:block;position:fixed;inset:0;z-index:1;}
 .title-main{font-family:'Bebas Neue',sans-serif;font-size:clamp(72px,14vw,160px);letter-spacing:.05em;line-height:.9;color:#F5F0E8;text-align:center;margin-bottom:14px;}
 .c{color:#FF3D00;}.g{color:#00C853;}.k{color:#FF6EC7;}.p{color:#FFD600;}
 .title-sub{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#F5F0E8;opacity:.3;margin-bottom:32px;}
-
+.display-block{display:block;}
+.display-none{display:none;}
 .pills{display:flex;gap:8px;justify-content:center;margin-bottom:32px;flex-wrap:wrap;padding:0 16px;}
 .pill{padding:5px 13px;border:1.5px solid;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;}
 .pc{color:#FF3D00;border-color:#FF3D00;}.pg{color:#00C853;border-color:#00C853;}
@@ -39,9 +42,25 @@ canvas{display:block;position:fixed;inset:0;z-index:1;}
 .hlife.dead{opacity:.12;}
 .hlife.regen{animation:pulse-life .5s infinite alternate;}
 @keyframes pulse-life{from{transform:scale(1);}to{transform:scale(1.4);}}
-/* HP bar */
+/* ── TOUCH CONTROLS ── */
+#touch-controls{position:fixed;bottom:0;left:0;right:0;height:160px;z-index:8;pointer-events:none;display:none;}
+#touch-controls.active{display:block;}
+#btn-left,#btn-right{position:absolute;bottom:20px;width:80px;height:80px;border-radius:50%;background:rgba(245,240,232,0.08);border:2px solid rgba(245,240,232,0.18);display:flex;align-items:center;justify-content:center;pointer-events:all;user-select:none;-webkit-user-select:none;touch-action:none;}
+#btn-left{left:24px;}
+#btn-right{left:120px;}
+#btn-jump{position:absolute;bottom:20px;right:24px;width:90px;height:90px;border-radius:50%;background:rgba(245,240,232,0.12);border:2px solid rgba(245,240,232,0.3);display:flex;align-items:center;justify-content:center;pointer-events:all;user-select:none;-webkit-user-select:none;touch-action:none;}
+#btn-left svg,#btn-right svg,#btn-jump svg{opacity:0.5;}
+#btn-left:active,#btn-right:active,#btn-jump:active{background:rgba(245,240,232,0.22);border-color:rgba(245,240,232,0.5);}
 #streak-el{position:fixed;bottom:40px;left:50%;transform:translateX(-50%);font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.12em;pointer-events:none;z-index:6;color:#FFD600;opacity:0;transition:opacity .2s;white-space:nowrap;}
 #combo-el{position:fixed;top:70px;left:50%;transform:translateX(-50%);font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:.1em;pointer-events:none;z-index:6;opacity:0;transition:opacity .15s;white-space:nowrap;}
+
+@media (max-width: 520px){
+  #hud{padding:12px 14px;gap:14px;}
+  .hs{font-size:30px;}
+  .hp{font-size:9px;}
+  #combo-el{font-size:34px;top:64px;}
+  #streak-el{bottom:120px;}
+}
 
 #gameover-screen{background:rgba(8,8,8,.97);}
 .got{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,10vw,96px);color:#FF3D00;letter-spacing:.06em;margin-bottom:6px;}
@@ -67,7 +86,8 @@ canvas{display:block;position:fixed;inset:0;z-index:1;}
     <div class="pill pp">⭐ Purpose · SUPER JUMP</div>
   </div>
   <button class="big-btn" id="start-btn">PLAY</button>
-  <div class="hint">← → Move · Space / ↑ Double Jump · Dodge the grey Doubts</div>
+  <div id="hints-for-pc" class="hint">← → Move · Space / ↑ Double Jump · Dodge the grey Doubts</div>
+  <div id="hints-for-mobile" class="hint display-none">joystick to move, Double tap jump for double jump · Dodge the grey Doubts to win</div>
 </div>
 
 <div id="hud" class="hidden">
@@ -80,6 +100,19 @@ canvas{display:block;position:fixed;inset:0;z-index:1;}
 <div id="streak-el"></div>
 
 <canvas id="game-canvas"></canvas>
+
+<!-- TOUCH CONTROLS -->
+<div id="touch-controls">
+  <div id="btn-left">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F5F0E8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </div>
+  <div id="btn-right">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F5F0E8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>
+  <div id="btn-jump">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F5F0E8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+  </div>
+</div>
 
 <div class="screen hidden" id="gameover-screen">
   <div class="got">GAME OVER</div>
@@ -119,7 +152,8 @@ canvas{display:block;position:fixed;inset:0;z-index:1;}
 
   var P = { x:0, y:0, w:32, h:32, vx:0, vy:0, onGround:false, jumpsLeft:2, jumpHeld:false, invincible:0, dashTimer:0, activeValue:null, trail:[] };
 
-  function GND(){ return H() - 80; }
+  var isMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+  function GND(){ return isMobile ? H() - 180 : H() - 80; }
 
   var keys = {};
   window.addEventListener('keydown', function(e){
@@ -127,6 +161,43 @@ canvas{display:block;position:fixed;inset:0;z-index:1;}
     if(state==='playing' && (e.code==='Space'||e.code==='ArrowUp')) e.preventDefault();
   });
   window.addEventListener('keyup', function(e){ keys[e.code] = false; });
+
+  // ── TOUCH CONTROLS ──
+  if(isMobile){
+    document.getElementById('touch-controls').classList.add('active');
+    document.getElementById('hints-for-pc').classList.add('display-none');
+    document.getElementById('hints-for-mobile').classList.remove('display-none');
+  }
+
+  function addBtn(id, keyCode){
+    var el = document.getElementById(id);
+    el.addEventListener('touchstart', function(e){ e.preventDefault(); keys[keyCode]=true; }, {passive:false});
+    el.addEventListener('touchend',   function(e){ e.preventDefault(); keys[keyCode]=false; }, {passive:false});
+    el.addEventListener('touchcancel',function(e){ e.preventDefault(); keys[keyCode]=false; }, {passive:false});
+    // Pointer events help on some Android browsers / PWAs
+    el.addEventListener('pointerdown', function(e){ e.preventDefault(); keys[keyCode]=true; }, {passive:false});
+    el.addEventListener('pointerup',   function(e){ e.preventDefault(); keys[keyCode]=false; }, {passive:false});
+    el.addEventListener('pointercancel',function(e){ e.preventDefault(); keys[keyCode]=false; }, {passive:false});
+    el.addEventListener('pointerleave', function(e){ e.preventDefault(); keys[keyCode]=false; }, {passive:false});
+  }
+  addBtn('btn-left',  'ArrowLeft');
+  addBtn('btn-right', 'ArrowRight');
+
+  // Jump button — fires tryJump on each tap (supports double jump)
+  var jumpEl = document.getElementById('btn-jump');
+  jumpEl.addEventListener('touchstart', function(e){
+    e.preventDefault();
+    if(state==='playing') tryJump();
+  }, {passive:false});
+  jumpEl.addEventListener('pointerdown', function(e){
+    e.preventDefault();
+    if(state==='playing') tryJump();
+  }, {passive:false});
+
+  // Prevent page scroll/zoom during gameplay
+  document.addEventListener('touchmove', function(e){ if(state==='playing') e.preventDefault(); }, {passive:false});
+  document.addEventListener('gesturestart', function(e){ e.preventDefault(); }, {passive:false});
+
 
   function tryJump(){
     if(P.jumpsLeft > 0){
@@ -147,6 +218,7 @@ canvas{display:block;position:fixed;inset:0;z-index:1;}
     P.invincible=0; P.dashTimer=0; P.activeValue=null; P.trail=[];
     initStars(); spawnOrbs(7);
     document.getElementById('hud').classList.remove('hidden');
+    if(isMobile) document.getElementById('touch-controls').classList.add('active');
     updateLivesHUD();
     state='playing';
     hide('title-screen'); hide('gameover-screen');
