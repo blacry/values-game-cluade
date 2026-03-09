@@ -3,15 +3,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VALUES — The Game</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--cream:#F5F0E8;--ink:#080808;--creativity:#FF3D00;--growth:#00C853;--kindness:#FF6EC7;--purpose:#FFD600;}
 html,body{width:100%;height:100%;background:#080808;overflow:hidden;font-family:'DM Sans',sans-serif;}
-body{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;}
-canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
+canvas{display:block;position:fixed;inset:0;z-index:1;}
 
 .screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:10;transition:opacity .4s,visibility .4s;}
 .screen.hidden{opacity:0;visibility:hidden;pointer-events:none;}
@@ -169,29 +168,22 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
     document.getElementById('hints-for-mobile').classList.remove('display-none');
   }
 
+  var touchJumpPending = false;
+
   function addBtn(id, keyCode){
     var el = document.getElementById(id);
     el.addEventListener('touchstart', function(e){ e.preventDefault(); keys[keyCode]=true; }, {passive:false});
     el.addEventListener('touchend',   function(e){ e.preventDefault(); keys[keyCode]=false; }, {passive:false});
     el.addEventListener('touchcancel',function(e){ e.preventDefault(); keys[keyCode]=false; }, {passive:false});
-    // Pointer events help on some Android browsers / PWAs
-    el.addEventListener('pointerdown', function(e){ e.preventDefault(); keys[keyCode]=true; }, {passive:false});
-    el.addEventListener('pointerup',   function(e){ e.preventDefault(); keys[keyCode]=false; }, {passive:false});
-    el.addEventListener('pointercancel',function(e){ e.preventDefault(); keys[keyCode]=false; }, {passive:false});
-    el.addEventListener('pointerleave', function(e){ e.preventDefault(); keys[keyCode]=false; }, {passive:false});
   }
   addBtn('btn-left',  'ArrowLeft');
   addBtn('btn-right', 'ArrowRight');
 
-  // Jump button — fires tryJump on each tap (supports double jump)
+  // Jump button — sets a flag consumed once per frame so double-tap = double jump
   var jumpEl = document.getElementById('btn-jump');
   jumpEl.addEventListener('touchstart', function(e){
     e.preventDefault();
-    if(state==='playing') tryJump();
-  }, {passive:false});
-  jumpEl.addEventListener('pointerdown', function(e){
-    e.preventDefault();
-    if(state==='playing') tryJump();
+    if(state==='playing') touchJumpPending = true;
   }, {passive:false});
 
   // Prevent page scroll/zoom during gameplay
@@ -358,9 +350,13 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
       if(keys['ArrowRight']||keys['KeyD']) P.vx=spd;
     }
 
+    // Keyboard jump (held guard prevents auto-repeat)
     var jp=keys['Space']||keys['ArrowUp']||keys['KeyW'];
     if(jp&&!P.jumpHeld){ tryJump(); P.jumpHeld=true; }
     if(!jp) P.jumpHeld=false;
+
+    // Touch jump (one tryJump per tap, no held guard needed)
+    if(touchJumpPending){ tryJump(); touchJumpPending=false; }
 
     P.vy+=GRAV; P.x+=P.vx; P.y+=P.vy;
     if(P.x<-P.w) P.x=W(); if(P.x>W()) P.x=-P.w;
