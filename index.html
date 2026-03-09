@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VALUES — The Game</title>
+<title>VALUES &mdash; The Game</title>
 
   <!-- Social Media Preview (OG Tags) -->
   <meta property="og:title" content="VALUES — The Game">
@@ -86,12 +86,12 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
 
 <div class="screen" id="title-screen">
   <div class="title-main"><span class="c">V</span><span class="g">A</span><span class="k">L</span><span class="p">U</span>ES</div>
-  <div class="title-sub">The Game · 2026</div>
+  <div class="title-sub">The Game &middot; 2026</div>
   <div class="pills">
-    <div class="pill pc">🔴 Creativity · +HEALTH</div>
-    <div class="pill pg">🟢 Growth · 2× POINTS</div>
-    <div class="pill pk">💗 Kindness · BLAST WAVE</div>
-    <div class="pill pp">⭐ Purpose · SUPER JUMP</div>
+    <div class="pill pc">&#x1F534; Creativity &middot; +HEALTH</div>
+    <div class="pill pg">&#x1F7E2; Growth &middot; 2&times; POINTS</div>
+    <div class="pill pk">&#x1F497; Kindness &middot; BLAST WAVE</div>
+    <div class="pill pp">&#x2B50; Purpose &middot; SUPER JUMP</div>
   </div>
   <button class="big-btn" id="start-btn">PLAY</button>
   <div id="hints-for-pc" class="hint">← → Move · Space / ↑ Double Jump · Dodge the grey Doubts</div>
@@ -115,7 +115,6 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
   <svg id="play-icon" width="16" height="16" viewBox="0 0 24 24" fill="#F5F0E8" style="display:none"><polygon points="5,3 19,12 5,21"/></svg>
 </button>
 
-<!-- PAUSE SCREEN -->
 <div id="pause-screen">
   <div class="pause-title">PAUSED</div>
   <div class="pause-sub">Press Esc or tap resume to continue</div>
@@ -123,17 +122,10 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
   <button class="sml" id="pause-menu-btn" style="margin-top:8px">MAIN MENU</button>
 </div>
 
-<!-- TOUCH CONTROLS -->
 <div id="touch-controls">
-  <div id="btn-left">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F5F0E8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-  </div>
-  <div id="btn-right">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F5F0E8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-  </div>
-  <div id="btn-jump">
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F5F0E8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
-  </div>
+  <div id="btn-left"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F5F0E8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+  <div id="btn-right"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F5F0E8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
+  <div id="btn-jump"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F5F0E8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></div>
 </div>
 
 <div class="screen hidden" id="gameover-screen">
@@ -141,10 +133,10 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
   <div class="gos" id="go-score">0 pts</div>
   <div class="gob" id="go-best">Best: 0</div>
   <div class="govs" id="go-vals"></div>
-  <button class="share-btn" id="share-btn">📤 SHARE SCORE</button>
+  <button class="share-btn" id="share-btn">SHARE SCORE</button>
   <button class="big-btn" id="retry-btn" style="margin-bottom:4px;margin-top:12px;">PLAY AGAIN</button>
   <button class="sml" id="menu-btn">MAIN MENU</button>
-  <div class="gob" style="color: gray; padding-top: 2vh;">Thanks for playing the game!</div>
+  <div class="gob" style="color:gray;padding-top:2vh;">Thanks for playing the game!</div>
 </div>
 
 <script>
@@ -179,10 +171,10 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
   var isMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
   function GND(){ return isMobile ? H() - 180 : H() - 80; }
 
-  var keys = {};
-  window.addEventListener('keydown', function(e){
-    keys[e.code] = true;
-    if(state==='playing' && (e.code==='Space'||e.code==='ArrowUp')) e.preventDefault();
+  var keys={};
+  window.addEventListener('keydown',function(e){
+    keys[e.code]=true;
+    if(state==='playing'&&(e.code==='Space'||e.code==='ArrowUp')) e.preventDefault();
     if(e.code==='Escape'){
       if(state==='playing') pauseGame();
       else if(state==='paused') resumeGame();
@@ -190,20 +182,18 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
   });
   window.addEventListener('keyup', function(e){ keys[e.code] = false; });
 
-  // ── TOUCH CONTROLS ──
   if(isMobile){
     document.getElementById('touch-controls').classList.add('active');
     document.getElementById('hints-for-pc').classList.add('display-none');
     document.getElementById('hints-for-mobile').classList.remove('display-none');
   }
 
-  var touchJumpPending = false;
-
-  function addBtn(id, keyCode){
-    var el = document.getElementById(id);
-    el.addEventListener('touchstart', function(e){ e.preventDefault(); keys[keyCode]=true; }, {passive:false});
-    el.addEventListener('touchend',   function(e){ e.preventDefault(); keys[keyCode]=false; }, {passive:false});
-    el.addEventListener('touchcancel',function(e){ e.preventDefault(); keys[keyCode]=false; }, {passive:false});
+  var touchJumpPending=false;
+  function addBtn(id,keyCode){
+    var el=document.getElementById(id);
+    el.addEventListener('touchstart',function(e){e.preventDefault();keys[keyCode]=true;},{passive:false});
+    el.addEventListener('touchend',function(e){e.preventDefault();keys[keyCode]=false;},{passive:false});
+    el.addEventListener('touchcancel',function(e){e.preventDefault();keys[keyCode]=false;},{passive:false});
   }
   addBtn('btn-left','ArrowLeft');
   addBtn('btn-right','ArrowRight');
@@ -410,7 +400,7 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
         o.alive=false; collected[o.value]++; combo++; comboTimer=90; streak++;
         var pts=Math.round(5*combo*Math.sqrt(level)*multiplier); score+=pts; P.activeValue=o.value;
         spawnBurst(o.x,o.y,COLORS[o.value],18,5);
-        floatText(o.x,o.y,'+'+(combo>1?combo+'x ':'')+pts+(multiplier>1?' ×2':''),COLORS[o.value]);
+        floatText(o.x,o.y,'+'+(combo>1?combo+'x ':'')+pts+(multiplier>1?' x2':''),COLORS[o.value]);
         HP=Math.min(MAX_HP,HP+2+combo*1.5);
         if(streak===10){ floatText(P.x+P.w/2,P.y-44,'🔥 STREAK x10',COLORS.growth,18); HP=Math.min(300,HP+40); showStreak('STREAK x10'); }
         if(streak===25){ floatText(P.x+P.w/2,P.y-44,'🔥 STREAK x25 — FULL HEAL!',COLORS.purpose,20); HP=300; lives=3; updateLivesHUD(); showStreak('STREAK x25 — FULL HEAL!'); }
@@ -675,17 +665,20 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
     sx.font='bold 36px sans-serif'; sx.fillStyle='#FFD600';
     sx.fillText(level, 50, 300);
 
-    // values collected (right side)
-    var vdata=[{l:'CREATIVITY',c:'#FF3D00',v:collected.creativity},{l:'GROWTH',c:'#00C853',v:collected.growth},{l:'KINDNESS',c:'#FF6EC7',v:collected.kindness},{l:'PURPOSE',c:'#FFD600',v:collected.purpose}];
-    sx.textAlign='left';
-    vdata.forEach(function(vd,i){
-      var col = i<2 ? sw-240 : sw-120;
-      var row = i%2===0 ? 152 : 232;
-      sx.font='bold 30px sans-serif'; sx.fillStyle=vd.c; sx.fillText(vd.v, col, row);
-      sx.font='10px monospace'; sx.fillStyle='rgba(245,240,232,0.35)'; sx.fillText(vd.l, col, row+18);
-    });
+    var vdata=[
+      {l:'CREATIVITY',c:'#FF3D00',v:collected.creativity},
+      {l:'GROWTH',c:'#00C853',v:collected.growth},
+      {l:'KINDNESS',c:'#FF6EC7',v:collected.kindness},
+      {l:'PURPOSE',c:'#FFD600',v:collected.purpose}
+    ];
+    for(var vi2=0;vi2<4;vi2++){
+      var vd=vdata[vi2];
+      var col2=vi2<2?sw-240:sw-120;
+      var row2=vi2%2===0?152:232;
+      sx.font='bold 30px sans-serif'; sx.fillStyle=vd.c; sx.fillText(vd.v,col2,row2);
+      sx.font='10px monospace'; sx.fillStyle='rgba(245,240,232,0.35)'; sx.fillText(vd.l,col2,row2+18);
+    }
 
-    // tagline
     sx.textAlign='center'; sx.font='italic 13px sans-serif';
     sx.fillStyle='rgba(245,240,232,0.22)';
     sx.fillText('Dodge doubts. Collect values. Level up.', sw/2, sh-18);
@@ -693,9 +686,10 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
     // export
     sc.toBlob(function(blob){
       var url=URL.createObjectURL(blob);
-      var shareText='I scored '+score.toLocaleString()+' pts on VALUES — The Game! Can you beat me? 🎮';
-      if(navigator.share && navigator.canShare && navigator.canShare({files:[new File([blob],'values-score.png',{type:'image/png'})]])){
-        navigator.share({title:'VALUES — The Game',text:shareText,files:[new File([blob],'values-score.png',{type:'image/png'})]}).catch(function(){});
+      var shareText='I scored '+score.toLocaleString()+' pts on VALUES - The Game! Can you beat me? Here check it out 🔥 https://values-game.vercel.app/';
+      var file=new File([blob],'values-score.png',{type:'image/png'});
+      if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+        navigator.share({title:'VALUES - The Game',text:shareText,files:[file]}).catch(function(){});
       } else {
         var a=document.createElement('a'); a.href=url; a.download='values-score.png'; a.click();
         setTimeout(function(){URL.revokeObjectURL(url);},3000);
