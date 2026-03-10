@@ -8,14 +8,14 @@
   <!-- Social Media Preview (OG Tags) -->
   <meta property="og:title" content="VALUES — The Game">
 <meta property="og:description" content="Collect values, dodge doubts, level up. How far can you go?">
-  <meta property="og:image" content="/og-image.png">
+  <meta property="og:image" content="https://values-game.vercel.app/og-image.png">
   <meta property="og:image:width" content="1536">
   <meta property="og:image:height" content="1024">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="VALUES — The Game">
 <meta name="twitter:description" content="Collect values, dodge doubts, level up. How far can you go?">
-  <meta name="twitter:image" content="/og-image.png">
+<meta name="twitter:image" content="https://values-game.vercel.app/og-image.png">
 
 <link rel="icon" type="image/png" href="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAlACUDASIAAhEBAxEB/8QAGgAAAgMBAQAAAAAAAAAAAAAAAAgFBgcEAv/EADIQAAEDAwMCAwMNAAAAAAAAAAECAwQABQYHERIIITFBURRhcRMVFiNiY4OUoaPB0eH/xAAZAQACAwEAAAAAAAAAAAAAAAACBQMEBgD/xAAnEQACAgEDAwIHAAAAAAAAAAABAgMRAAQFIRIxQQZRIjKRsdHh8P/aAAwDAQACEQMRAD8AWzEbDNv16h2i3Ml6XLdS00keZP8AHnTV2TpOgi3tKuuUvollILiY8dJQD6Ak71kHSs0ka142ogHZx0/sOUxepHUHb8RzKbYmsfm3GNbCgXKW2oANFWx2SD47A96WKUey/vWO5RLEVSIc1fa/f7VkCelCwEbfSy4flUf3WUa86CTcAtSb5b55udr5ht1am+LjRPgVAdtj4b0yGq2sUDDIdl+b7W/eZt5bL0VhtQSA0ACVKJ+NV7UHN7fqJ0v32/wozsbmlDTrDu3JpxEhAUn/AGiZI1B6e45wI5dQ7L18qTXbjx+cRWQzs54UVITmtnj2oollsDOk09MRmsdLziUaxY8pSgkBbvcn7lymQz3RnB8uyx3IZ0qUw7J4e2sMSAluTx8OQ+AG/rSgaWXxiyZfbbjIP1LLh5+4KSUk/rTWxLzapzCH4twjONrG4IcFLJNSdOStX5x7Ft66xQ4aqFf31yzak6c4pnMG2sTJDsF62ApiSIjoQttBABT7x2FQGpON2LC+m+9Y7YjtGabbVutzktxRfQVKUfMk159thjuZbA/EFZ7rjldpYw2VaGZbT8qXxTxbUDxAUFbnb4UA3AyfD09+MkOyrDT9fy89v3i2TyPlzRXNMe3dPeimKIekYnlkBc5zw3lJI2q0YvMdTOAHmn1ooqLXIpjaxljaJXEqUfOWa7TnRAcP2TWfzJLh33ooqhtiKFPGOPUErlxZ8ZEvOKK6KKK0AArMWxN5/9k=">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
@@ -242,7 +242,8 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
   function spawnOrbs(n){
     for(var i=0;i<n;i++){
       var v=VALUES[Math.floor(Math.random()*4)];
-      orbs.push({x:60+Math.random()*(W()-120),y:80+Math.random()*(GND()-160),r:13,value:v,vx:(Math.random()-0.5)*1.2,wobble:Math.random()*Math.PI*2,alive:true});
+      var life=600+Math.floor(Math.random()*1200); 
+      orbs.push({x:60+Math.random()*(W()-120),y:80+Math.random()*(GND()-160),r:13,value:v,vx:(Math.random()-0.5)*1.2,wobble:Math.random()*Math.PI*2,alive:true,life:life,maxLife:life});
     }
   }
 
@@ -393,7 +394,7 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
 
     orbs.forEach(function(o){
       if(!o.alive) return;
-      o.wobble+=0.055; o.y+=Math.sin(o.wobble)*0.55; o.x+=o.vx;
+      o.wobble+=0.055; o.y+=Math.sin(o.wobble)*0.55; o.x+=o.vx; o.life--; if(o.life<=0){o.alive=false;return;}
       if(o.x<-20) o.x=W()+20; if(o.x>W()+20) o.x=-20;
       var dx=(P.x+P.w/2)-o.x, dy=(P.y+P.h/2)-o.y;
       if(Math.sqrt(dx*dx+dy*dy)<o.r+16){
@@ -508,6 +509,7 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
 
   function drawOrb(o){
     var c=COLORS[o.value]; ctx.save();
+    var scale=o.life<180?0.2+0.8*(o.life/180):1; if(scale<1){ctx.translate(o.x,o.y);ctx.scale(scale,scale);ctx.translate(-o.x,-o.y);}
     var g=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r*3);
     g.addColorStop(0,c+'55'); g.addColorStop(1,'transparent');
     ctx.fillStyle=g; ctx.beginPath(); ctx.arc(o.x,o.y,o.r*3,0,Math.PI*2); ctx.fill();
