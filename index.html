@@ -44,7 +44,7 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
 .hl{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;color:#F5F0E8;opacity:.4;text-transform:uppercase;}
 .hp{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.11em;color:#F5F0E8;margin-left:auto;text-align:right;}
 .hlives{display:flex;gap:6px;margin-left:10px;align-items:center;}
-.hlife{width:10px;height:10px;border-radius:50%;background:#FF3D00;transition:opacity .3s,transform .3s;}
+.hlife{font-size:20px;line-height:1;transition:opacity .3s,transform .3s;color:#FF6EC7;}
 .hlife.dead{opacity:.12;}
 .hlife.regen{animation:pulse-life .5s infinite alternate;}
 @keyframes pulse-life{from{transform:scale(1);}to{transform:scale(1.4);}}
@@ -88,9 +88,9 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
   <div class="title-main"><span class="c">V</span><span class="g">A</span><span class="k">L</span><span class="p">U</span>ES</div>
   <div class="title-sub">The Game &middot; 2026</div>
   <div class="pills">
-    <div class="pill pc">&#x1F534; Creativity &middot; +HEALTH</div>
+    <div class="pill pc">&#x1F534; Creativity &middot; BLAST WAVE</div>
     <div class="pill pg">&#x1F7E2; Growth &middot; 2&times; POINTS</div>
-    <div class="pill pk">&#x1F497; Kindness &middot; BLAST WAVE</div>
+    <div class="pill pk">&#x1F497; Kindness &middot; +HEALTH</div>
     <div class="pill pp">&#x2B50; Purpose &middot; SUPER JUMP</div>
   </div>
   <button class="big-btn" id="start-btn">PLAY</button>
@@ -157,7 +157,9 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
   var state = 'title'; // title | playing | paused | gameover
   var score, bestScore, lives, combo, comboTimer, level, levelTimer, frame;
   var collected, powerUp, powerTimer, multiplier, multiplierTimer;
-  var particles, orbs, doubts, floatTexts, bgStars;
+  var particles, orbs, doubts, floatTexts, bgStars, flowOrbs;
+  var inVoid, voidTimer, bhAngle, bhPull;
+  var BH = { x:0, y:-120, r:38 }; // black hole center (above screen)
   var comboTO = null;
   // ── REGEN SYSTEM ──
   var HP, MAX_HP;          // fine-grained HP (100 per life)
@@ -217,11 +219,12 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
   }
 
   function startGame(){
-    score=0; lives=3; combo=0; comboTimer=0; level=1; levelTimer=0; frame=0;
+    score=0; lives=5; combo=0; comboTimer=0; level=1; levelTimer=0; frame=0;
     collected={creativity:0,growth:0,kindness:0,purpose:0};
     powerUp=null; powerTimer=0; multiplier=1; multiplierTimer=0;
-    HP=300; MAX_HP=300; regenRate=0.04; regenPause=0; streak=0;
-    particles=[]; orbs=[]; doubts=[]; floatTexts=[];
+    HP=500; MAX_HP=500; regenRate=0.04; regenPause=0; streak=0;
+    particles=[]; orbs=[]; doubts=[]; floatTexts=[]; flowOrbs=[];
+    inVoid=false; voidTimer=0; bhAngle=0; bhPull=0;
     P.x=W()/2-P.w/2; P.y=GND()-P.h;
     P.vx=0; P.vy=0; P.onGround=true; P.jumpsLeft=2; P.jumpHeld=false;
     P.invincible=0; P.dashTimer=0; P.activeValue=null; P.trail=[];
@@ -326,14 +329,11 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
       for(var i=0;i<16;i++){var a=(i/16)*Math.PI*2;particles.push({x:P.x+P.w/2,y:P.y+P.h/2,vx:Math.cos(a)*8,vy:Math.sin(a)*8,r:3,color:COLORS.purpose,alpha:1,dec:0.028});}
     }
     if(value==='creativity'){
-      if(HP<300){
-        HP=Math.min(300,HP+34);
-        lives=Math.min(3,Math.max(1,Math.ceil(HP/100)));
-        updateLivesHUD();
-        floatText(ox,oy-20,'+HEALTH',COLORS.creativity,18);
-        spawnBurst(P.x+P.w/2,P.y+P.h/2,COLORS.creativity,10,4);
-      } else { floatText(ox,oy-20,'FULL HP!',COLORS.creativity,16); }
-      for(var i=0;i<10;i++){var a=Math.random()*Math.PI*2;particles.push({x:P.x+P.w/2,y:P.y+P.h/2,vx:Math.cos(a)*5,vy:Math.sin(a)*5,r:Math.random()*3+1,color:COLORS.creativity,alpha:1,dec:0.04});}
+      var blasted=0;
+      doubts.forEach(function(d){if(d.alive){d.alive=false;blasted++;spawnBurst(d.x+d.w/2,d.y+d.h/2,COLORS.creativity,10,5);}});
+      var bonus=blasted*30*level; if(bonus>0) score+=bonus;
+      floatText(P.x+P.w/2,P.y-20,blasted>0?'BLAST! +'+bonus:'BLAST WAVE!',COLORS.creativity,18);
+      for(var i=0;i<28;i++){var a=(i/28)*Math.PI*2;particles.push({x:P.x+P.w/2,y:P.y+P.h/2,vx:Math.cos(a)*11,vy:Math.sin(a)*11,r:4,color:COLORS.creativity,alpha:0.85,dec:0.02});}
     }
     if(value==='growth'){
       multiplier=2; multiplierTimer=480;
@@ -341,11 +341,14 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
       for(var i=0;i<16;i++){var a=(i/16)*Math.PI*2;particles.push({x:P.x+P.w/2,y:P.y+P.h/2,vx:Math.cos(a)*7,vy:Math.sin(a)*7,r:Math.random()*4+2,color:COLORS.growth,alpha:1,dec:0.025});}
     }
     if(value==='kindness'){
-      var blasted=0;
-      doubts.forEach(function(d){if(d.alive){d.alive=false;blasted++;spawnBurst(d.x+d.w/2,d.y+d.h/2,COLORS.kindness,10,5);}});
-      var bonus=blasted*30*level; if(bonus>0) score+=bonus;
-      floatText(P.x+P.w/2,P.y-20,blasted>0?'WAVE! +'+bonus:'HEART WAVE!',COLORS.kindness,18);
-      for(var i=0;i<28;i++){var a=(i/28)*Math.PI*2;particles.push({x:P.x+P.w/2,y:P.y+P.h/2,vx:Math.cos(a)*11,vy:Math.sin(a)*11,r:4,color:COLORS.kindness,alpha:0.85,dec:0.02});}
+      if(HP<300){
+        HP=Math.min(500,HP+50);
+        lives=Math.min(5,Math.max(1,Math.ceil(HP/100)));
+        updateLivesHUD();
+        floatText(ox,oy-20,'+HEALTH',COLORS.kindness,18);
+        spawnBurst(P.x+P.w/2,P.y+P.h/2,COLORS.kindness,10,4);
+      } else { floatText(ox,oy-20,'FULL HP!',COLORS.kindness,16); }
+      for(var i=0;i<10;i++){var a=Math.random()*Math.PI*2;particles.push({x:P.x+P.w/2,y:P.y+P.h/2,vx:Math.cos(a)*5,vy:Math.sin(a)*5,r:Math.random()*3+1,color:COLORS.kindness,alpha:1,dec:0.04});}
     }
   }
 
@@ -360,13 +363,13 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
     if(orbs.filter(function(o){return o.alive;}).length<4) spawnOrbs(3);
 
     // regen
-    var HP_CAP=300;
+    var HP_CAP=500;
     if(regenPause>0){ regenPause--; }
     else if(HP<HP_CAP){
       var rate=regenRate+streak*0.008;
       HP=Math.min(HP_CAP,HP+rate);
       var lFromHP=Math.floor(HP/100);
-      if(lFromHP>lives&&lives<3){ lives=Math.min(3,lFromHP); updateLivesHUD(); floatText(P.x+P.w/2,P.y-30,'❤ LIFE RESTORED',COLORS.creativity,18); }
+      if(lFromHP>lives&&lives<5){ lives=Math.min(5,lFromHP); updateLivesHUD(); floatText(P.x+P.w/2,P.y-30,'❤ LIFE RESTORED',COLORS.creativity,18); }
     }
 
     var spd=(powerUp==='creativity')?SPEED*1.7:SPEED;
@@ -402,9 +405,9 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
         var pts=Math.round(5*combo*Math.sqrt(level)*multiplier); score+=pts; P.activeValue=o.value;
         spawnBurst(o.x,o.y,COLORS[o.value],18,5);
         floatText(o.x,o.y,'+'+(combo>1?combo+'x ':'')+pts+(multiplier>1?' x2':''),COLORS[o.value]);
-        HP=Math.min(MAX_HP,HP+2+combo*1.5);
-        if(streak===10){ floatText(P.x+P.w/2,P.y-44,'🔥 STREAK x10',COLORS.growth,18); HP=Math.min(300,HP+40); showStreak('STREAK x10'); }
-        if(streak===25){ floatText(P.x+P.w/2,P.y-44,'🔥 STREAK x25 — FULL HEAL!',COLORS.purpose,20); HP=300; lives=3; updateLivesHUD(); showStreak('STREAK x25 — FULL HEAL!'); }
+        HP=Math.min(MAX_HP,HP+2+combo*0.9);
+        if(streak===10){ floatText(P.x+P.w/2,P.y-44,'🔥 STREAK x10',COLORS.growth,18); HP=Math.min(500,HP+40); showStreak('STREAK x10'); }
+        if(streak===25){ floatText(P.x+P.w/2,P.y-44,'🔥 STREAK x25 — FULL HEAL!',COLORS.purpose,20); HP=500; lives=5; updateLivesHUD(); showStreak('STREAK x25 — FULL HEAL!'); }
         if(streak===50){ floatText(P.x+P.w/2,P.y-44,'🔥 STREAK x50 — INVINCIBLE!',COLORS.kindness,22); P.invincible=300; showStreak('STREAK x50 ★'); }
         activateSuperpower(o.value,o.x,o.y);
         if(collected[o.value]%5===0){ powerUp=o.value; powerTimer=380; floatText(o.x,o.y-44,'✦ '+o.value.toUpperCase()+' SURGE!',COLORS[o.value],22); }
@@ -464,7 +467,7 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
             HP-=100;
             if(HP<=0&&lives>1){ HP=1; lives=1; updateLivesHUD(); P.invincible=180; floatText(P.x+P.w/2,P.y-30,'LAST STAND!',COLORS.creativity,24); spawnBurst(P.x+P.w/2,P.y+P.h/2,COLORS.creativity,30,6); }
             else if(HP<=0){ endGame(); }
-            else { lives=Math.max(1,Math.ceil(HP/100)); updateLivesHUD(); P.invincible=90; floatText(P.x+P.w/2,P.y-10,'DOUBT!',COLORS.doubt,20); }
+            else { lives=Math.max(1,Math.min(5,Math.ceil(HP/100))); updateLivesHUD(); P.invincible=90; floatText(P.x+P.w/2,P.y-10,'DOUBT!',COLORS.doubt,20); }
           }
         }
       }
@@ -479,7 +482,7 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
 
     document.getElementById('hud-score').textContent=score;
     document.getElementById('hud-level').textContent='LVL '+level;
-    var pl={creativity:'❤ HEALTH',kindness:'💗 WAVE',purpose:'⭐ JUMP SURGE'};
+    var pl={creativity:'🔴 BLAST',kindness:'💗 HEALTH',purpose:'⭐ JUMP SURGE'};
     var pwrTxt=powerUp&&pl[powerUp]?pl[powerUp]+' · '+Math.ceil(powerTimer/60)+'s':'';
     var multTxt=multiplier>1?'🟢 2× · '+Math.ceil(multiplierTimer/60)+'s':'';
     document.getElementById('hud-power').textContent=[multTxt,pwrTxt].filter(Boolean).join('  ');
@@ -603,7 +606,7 @@ canvas{display:block;position:fixed;inset:0;z-index:1;touch-action:none;}
 
   function updateLivesHUD(){
     var el=document.getElementById('hud-lives'); el.innerHTML='';
-    for(var i=0;i<3;i++){var d=document.createElement('div');d.className='hlife'+(i>=lives?' dead':'');el.appendChild(d);}
+    for(var i=0;i<5;i++){var d=document.createElement('div');d.className='hlife'+(i>=lives?' dead':'');d.textContent='\u2665';el.appendChild(d);}
   }
 
   function showStreak(txt){
