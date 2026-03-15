@@ -1,6 +1,11 @@
 # VALUES — The Game
 
-A fast, neon arcade platformer about collecting **Values** and dodging **Doubts** — all in a single `index.html`.
+
+A fast, neon arcade platformer about collecting **Values** and dodging **Doubts** — all in a single `index.html`..
+
+## Play Online
+
+You can play the game by clicking [HERE](https://values-game.vercel.app).
 
 ## Play locally
 
